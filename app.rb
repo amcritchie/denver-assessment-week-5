@@ -1,15 +1,18 @@
 require "sinatra"
+require "rack-flash"
 require "./lib/database"
 require "./lib/contact_database"
 require "./lib/user_database"
 
 class ContactsApp < Sinatra::Base
   enable :sessions
+  use Rack::Flash
 
   def initialize
     super
     @contact_database = ContactDatabase.new
     @user_database = UserDatabase.new
+    @logged_in = false
 
     jeff = @user_database.insert(username: "Jeff", password: "jeff123")
     hunter = @user_database.insert(username: "Hunter", password: "puglyfe")
@@ -21,7 +24,19 @@ class ContactsApp < Sinatra::Base
   end
 
   get "/" do
-    "Hello week 5"
+    erb :root
+  end
+
+  get "/login" do
+    erb :login
+  end
+
+  post "/login" do
+    @logged_in = true
+    if @logged_in == true
+      flash[:notice] = "Welcome, " + params[:username]
+    end
+    redirect '/'
   end
 
 end

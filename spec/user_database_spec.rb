@@ -1,5 +1,30 @@
 require "spec_helper"
 
+feature "Homepage" do
+  scenario "logged out user should see contacts" do
+    visit "/"
+    expect(page).to have_content("Contacts")
+  end
+end
+
+feature "Login" do
+  scenario "click login button" do
+    visit "/"
+    expect(page).to have_button("Login")
+    click_link "Login"
+    expect(page).to have_content("Username")
+    expect(page).to have_content("Password")
+  end
+  scenario "login" do
+    visit '/login'
+    fill_in "username", :with => "Alex"
+    fill_in "password", :with => "pass1"
+    click_button "login"
+    expect(page).to have_content("Welcome, Alex")
+  end
+end
+
+
 describe UserDatabase do
   let(:user_database) { UserDatabase.new }
 
